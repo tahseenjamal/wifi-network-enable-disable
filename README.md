@@ -88,6 +88,29 @@ nmcli device status
 ip a show wlp2s0
 ```
 
+### Likewise LAN
+
+```bash
+sudo nmcli connection add type ethernet ifname enp3s0 con-name enp3s0 ipv4.method auto ipv6.method ignore
+sudo nmcli connection up enp3s0
+```
+
+### 🧩 What each part does:
+
+* `type ethernet` → tells NetworkManager it’s a wired connection
+* `ifname enp3s0` → specifies the exact interface name
+* `con-name enp3s0` → names the connection profile (you’ll see this under `nmcli connection show`)
+* `ipv4.method auto` → enables DHCP (automatic IP from router)
+* `ipv6.method ignore` → skips IPv6 (optional but avoids delays)
+* `connection up` → activates the connection immediately
+
 ---
 
-Would you like me to also make a small `manage-wifi.sh` script that runs these three modes interactively (`shutdown`, `clean`, `activate`) via simple arguments?
+After running that, your system got the proper IP:
+
+```
+inet 192.168.1.159/24 brd 192.168.1.255 scope global dynamic noprefixroute enp3s0
+```
+
+✅ That’s the command sequence that fixed the `169.254.x.x` self-assigned IP and brought your LAN online.
+
